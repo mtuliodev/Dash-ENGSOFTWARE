@@ -6,14 +6,12 @@ Este repositório apresenta o desenvolvimento de um sistema web completo para vi
 
 ## ✅ Escopo da Solução
 
-A aplicação desenvolvida é um **dashboard de dados interativo**, com backend e frontend, ingestão de dados financeiros, autenticação de usuários, banco de dados relacional e visualização de KPIs.
+A aplicação desenvolvida é um **MVP de dashboard interativo**, com backend e frontend, ingestão de dados financeiros, autenticação de usuários, banco de dados relacional e visualização de KPIs.
 
-A solução foi escolhida por:
-
-- Possibilitar a tomada de decisões com base em dados reais do mercado;
+- Permite a tomada de decisões com base em dados reais do mercado.
 - Atende ao objetivo 8 dos Objetivos de Desenvolvimento Sustentável (ODS).
-- Ser totalmente construída em Python, tecnologia amplamente utilizada em análise de dados;
-- Permitir integração com outras soluções, como chatbots e sistemas mobile futuramente.
+- Foi construída inteiramente em Python, tecnologia amplamente utilizada em análise de dados.
+- Está pronta para futura integração com outras soluções, como chatbots e sistemas mobile.
 
 ---
 
@@ -21,12 +19,12 @@ A solução foi escolhida por:
 
 | Camada                 | Ferramentas / Bibliotecas                                      |
 |------------------------|---------------------------------------------------------------|
-| **Frontend Web**       | [Streamlit](https://streamlit.io), [Dash](https://dash.plotly.com) |
-| **Backend**            | Python (pandas, plotly, requests, authlib)                    |
+| **Frontend Web**       | Streamlit, Dash                                               |
+| **Backend**            | Python (pandas, requests, SQLAlchemy, authlib)                |
 | **Banco de Dados**     | SQLite (local) ou PostgreSQL (produção)                       |
-| **APIs Externas**      | Banco Central, B3, Tesouro Direto                             |
-| **Testes**             | `pytest`, `unittest`                                          |
-| **Deploy / CI-CD**     | Docker, GitHub Actions, Render                                |
+| **APIs Externas**      | Banco Central, B3, Tesouro Direto (via REST)                  |
+| **Testes**             | pytest, requests-mock                                         |
+| **Deploy / CI-CD**     | Docker, GitHub Actions                                        |
 
 ---
 
@@ -34,37 +32,26 @@ A solução foi escolhida por:
 
 ### 🔹 Nível 1 – Diagrama de Contexto
 
-**Usuários** acessam o **Dashboard Web** para visualizar informações financeiras obtidas de **APIs externas**, processadas por um **backend em Python**, e armazenadas em um **banco de dados relacional**.
-
-[Usuário] | v [Dashboard Web] | v [Backend Python] ---> [APIs Públicas] | v [Banco de Dados Relacional]
-
-
----
+**Usuários** acessam o **Dashboard Web** para visualizar informações financeiras obtidas de **APIs externas**, processadas pelo **backend Python**, e armazenadas em um **banco de dados relacional**.
 
 ### 🔹 Nível 2 – Diagrama de Containers
 
-[Usuário] | v [Frontend: Streamlit/Dash] ------------------------+ | | v v [Backend Python: lógica de negócio, ETL, auth] --> [APIs externas] | v [Database: SQLite/PostgreSQL]
-
-
-**Descrição dos containers:**
-
-- **Frontend (Streamlit ou Dash)**: Interface gráfica interativa para o usuário final.
-- **Backend**: Scripts de ingestão de dados, autenticação de usuários, lógica de análise.
-- **APIs**: Fornecem dados brutos financeiros (BACEN, B3, etc).
-- **Banco de Dados**: Armazena dados históricos para acesso rápido e análises.
-
----
+```
+[Usuário] → [Frontend: Streamlit/Dash]
+                   ↓            ↑
+             [Backend: ETL, Analytics, Auth]
+                   ↓            ↑
+         [Banco de Dados Relacional] ← [APIs Externas]
+```
 
 ### 🔹 Nível 3 – Componentes
 
-**Componentes principais:**
-
-- `frontend.py`: Interface de usuário (UI/UX)
-- `auth.py`: Autenticação e controle de acesso
-- `etl.py`: Coleta e transformação de dados
-- `analytics.py`: Indicadores e gráficos
-- `database.py`: Conexão com o banco de dados
-- `tests/`: Testes unitários para os componentes principais
+- **database.py**: conexão e definição de schema com SQLAlchemy
+- **etl.py**: coleta, transformação e carga de dados (ETL)
+- **analytics.py**: funções de cálculo de indicadores (média móvel, variação percentuais)
+- **auth.py**: autenticação de usuários (JWT/OAuth2)
+- **app.py / frontend.py**: aplicação web com Streamlit ou Dash
+- **tests/**: casos de teste para ETL e analytics
 
 ---
 
@@ -74,7 +61,7 @@ A solução foi escolhida por:
 - [x] Ingestão automática de dados via API
 - [x] Autenticação de usuários
 - [x] Banco de dados persistente
-- [x] Filtros interativos (data, setor, tipo de ativo)
+- [x] Filtros interativos (data, símbolo, intervalo)
 
 ---
 
@@ -84,67 +71,104 @@ A solução foi escolhida por:
 |-------|--------------------------------------------------------------------------|
 | HU01  | Como analista, desejo acessar gráficos de mercado para tomar decisões    |
 | HU02  | Como gestor, desejo exportar relatórios em PDF para reuniões             |
-| HU03  | Como usuário, desejo filtrar dados por período, tipo de ativo e setor    |
+| HU03  | Como usuário, desejo filtrar dados por período, símbolo e intervalo      |
 | HU04  | Como usuário autenticado, desejo ver dados privados de minha instituição |
 
 ---
 
 ## 🔄 Processo de Desenvolvimento Ágil
 
-Utilizou-se metodologia **SCRUM**, com sprints quinzenais:
+Metodologia **SCRUM**, com sprints quinzenais:
 
 - **Sprint 1**: Elicitação de requisitos e modelagem inicial
-- **Sprint 2**: Desenvolvimento do backend e ingestão de dados
-- **Sprint 3**: Criação do frontend e visualizações
+- **Sprint 2**: Desenvolvimento do backend e ingestão de dados (ETL)
+- **Sprint 3**: Criação do frontend e visualizações (TP3)
 - **Sprint 4**: Testes, autenticação, deploy e documentação
 
 ---
 
 ## 🧪 Testes
 
-- `pytest` e `unittest` para módulos ETL, autenticação e análise
-- Testes manuais de interface com diferentes navegadores e inputs
-- Verificação de performance e consistência de dados
+- **pytest** e **requests-mock** para validar o fluxo ETL e cálculos de indicadores
+- Cobertura mínima de 70% nas camadas ETL e analytics
 
 ---
 
 ## 🐳 Gerência de Configuração
 
-- Versionamento via `Git + GitHub`
-- Deploy contínuo com `Docker` e `GitHub Actions`
-- Ambientes virtuais com `venv`
-- Organização por branches: `main`, `dev`, `feature/*`, `hotfix/*`
+- Versionamento via **Git + GitHub**
+- Branches: `main`, `dev`, `feature/*`, `hotfix/*`
+- CI pelo GitHub Actions (`.github/workflows/ci.yml`): instalação de dependências, execução de testes e lint
+- Deploy via Docker em ambientes como Render ou AWS
 
 ---
 
-## ⚙️ Como Executar Localmente
+## ⚙️ Instalação e Inicialização
 
-# Clone o repositório
-git clone https://github.com/seu-usuario/dashboard-financeiro.git
-cd dashboard-financeiro
+```bash
+# 1) Clone o repositório
+git clone https://github.com/mtuliodev/Dash-ENGSOFTWARE.git
+autcd Dash-ENGSOFTWARE
 
-# Crie o ambiente virtual
+# 2) Crie o ambiente virtual
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+# Windows:
+venv\\Scripts\\activate
 
-# Instale as dependências
+# 3) Instale as dependências
 pip install -r requirements.txt
+```
 
-# Execute a aplicação
+### Variáveis de ambiente (opcional)
+- `DATABASE_URL` (ex.: `sqlite:///data.db`)
+- `API_URL` (ex.: `https://api.exemplo.com/market`)
+
+---
+
+## 📂 Estrutura de Código 
+
+- `database.py`: conexão e schema via SQLAlchemy
+- `etl.py`: fetch, transform e load de dados na tabela `market_data`
+- `analytics.py`: cálculo de KPIs (média móvel, pct change)
+- `app.py / frontend.py`: dashboard web em Streamlit ou Dash
+- `tests/`
+  - `test_etl.py`: testes de ETL com mocks
+  - `test_analytics.py`: testes de funções analytics
+
+---
+
+## 🚀 Comandos Principais
+
+```bash
+# Inicializar o banco de dados
+python database.py
+
+# Executar pipeline ETL (ex.: ticker ABC)
+python etl.py ABC
+
+# Rodar testes unitários
+pytest --disable-warnings -q
+
+# Iniciar dashboard
+streamlit run app.py
+# ou para frontend.py (Streamlit)
 streamlit run frontend.py
-# ou, para Dash:
-python app.py
+```
 
-## Estrutura
+---
 
-📦 dashboard-financeiro/
-├── app.py / frontend.py
-├── etl.py
-├── auth.py
-├── analytics.py
-├── database.py
-├── tests/
-├── requirements.txt
-├── README.md
-└── .github/
-    └── workflows/
+## 🔧 Integração Contínua
+
+O arquivo `.github/workflows/ci.yml` executa:
+1. Configuração do ambiente Python
+2. Instalação de dependências (`requirements.txt`)
+3. Execução de `pytest` e lint (`flake8`)
+
+Adicione o badge de status do workflow no topo do README:
+
+```md
+![CI](https://github.com/mtuliodev/Dash-ENGSOFTWARE/actions/workflows/ci.yml/badge.svg)
+```
+
