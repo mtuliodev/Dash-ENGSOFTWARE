@@ -1,0 +1,32 @@
+# Core de dados e ETL
+pandas
+numpy
+requests
+python-dotenv          # para carregar variáveis de ambiente (chaves de API, URLs)
+
+# Banco de dados
+SQLAlchemy             # ORM genérico
+psycopg2-binary        # driver PostgreSQL (em produção)
+# (sqlite3 é parte da stdlib do Python)
+
+# Cálculo de indicadores e visualização no backend
+plotly                 # geração de gráficos para Dash ou exportação de imagens
+
+# Frontend
+streamlit              # opção 1 de dashboard                                                                          
+dash                    # opção 2 de dashboard                        
+# (Dash traz dependências como flask e plotly automaticamente)
+
+# Autenticação
+authlib                # OAuth2/JWT para proteger endpoints/API                                                       
+
+# Exportação de relatórios
+reportlab              # geração de PDFs para downloads ou relatórios
+
+# Testes
+pytest                 # framework de testes
+requests-mock          # para mockar chamadas HTTP no teste de ETL
+# (unittest faz parte da stdlib do Python)
+
+# (Opcional para deploy/CI)
+python-dotenv          # já listado acima
